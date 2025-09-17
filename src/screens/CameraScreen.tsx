@@ -14,7 +14,7 @@ import { Button } from '../components/common/Button';
 import { i18n } from '../localization/i18n';
 import { predictionService, PredictionResponse } from '../services/predictionService';
 import { databaseService } from '../services/databaseService';
-// import * as ImagePicker from 'expo-image-picker'; // Commented out until package is installed
+import * as ImagePicker from 'expo-image-picker';
 
 interface CameraScreenProps {
   navigation: any;
@@ -53,8 +53,17 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({ navigation }) => {
   }, []);
 
   const requestPermissions = async () => {
-    // Mock permission request for now
-    return true;
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission needed', 'We need camera roll permissions to select images');
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.error('Permission error:', error);
+      return false;
+    }
   };
 
   const handleImageSelection = () => {
@@ -81,24 +90,32 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({ navigation }) => {
   const handleCameraCapture = async () => {
     setError(null);
     
-    const hasPermission = await requestPermissions();
-    if (!hasPermission) return;
+    try {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission needed', 'We need camera permissions to take photos');
+        return;
+      }
 
-    // Mock camera capture with sample dog images
-    const mockImages = [
-      'https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=400&fit=crop',
-      'https://images.unsplash.com/photo-1517849845537-4d257902454a?w=400&h=400&fit=crop',
-      'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&h=400&fit=crop',
-    ];
-    
-    const randomImage = mockImages[Math.floor(Math.random() * mockImages.length)];
-    
-    setSelectedImage({
-      uri: randomImage,
-      width: 400,
-      height: 400,
-    });
-    setPrediction(null);
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        setSelectedImage({
+          uri: result.assets[0].uri,
+          width: result.assets[0].width,
+          height: result.assets[0].height,
+        });
+        setPrediction(null);
+      }
+    } catch (error) {
+      console.error('Camera capture error:', error);
+      setError('Failed to capture photo');
+    }
   };
 
   const handleGallerySelection = async () => {
@@ -107,22 +124,26 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({ navigation }) => {
     const hasPermission = await requestPermissions();
     if (!hasPermission) return;
 
-    // Mock gallery selection with different sample dog images
-    const mockImages = [
-      'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=400&fit=crop',
-      'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=400&h=400&fit=crop',
-      'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=400&fit=crop',
-      'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?w=400&h=400&fit=crop',
-    ];
-    
-    const randomImage = mockImages[Math.floor(Math.random() * mockImages.length)];
-    
-    setSelectedImage({
-      uri: randomImage,
-      width: 400,
-      height: 400,
-    });
-    setPrediction(null);
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        setSelectedImage({
+          uri: result.assets[0].uri,
+          width: result.assets[0].width,
+          height: result.assets[0].height,
+        });
+        setPrediction(null);
+      }
+    } catch (error) {
+      console.error('Gallery selection error:', error);
+      setError('Failed to select from gallery');
+    }
   };
 
   const handlePredict = async () => {
@@ -134,43 +155,29 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({ navigation }) => {
     setError(null);
 
     try {
-      const predictionResult = await predictionService.predictBreed(selectedImage.uri);
+      console.log('Starting full prediction flow...');
       
-      if (predictionResult.error) {
-        setError(i18n.t(predictionResult.error) || 'Prediction failed');
-        return;
-      }
+      // Use the full prediction flow: upload → inference → database
+      const fullResult = await predictionService.handlePrediction(
+        selectedImage.uri, 
+        user, 
+        'v1.0.0'
+      );
+      
+      // Create prediction response for UI
+      const predictionResponse: PredictionResponse = {
+        predictions: fullResult.top3,
+        topPrediction: fullResult.top3[0],
+        modelVersion: 'v1.0.0',
+        predictionId: fullResult.record?.id,
+      };
 
-      if (!predictionResult.result) {
-        setError('No prediction result received');
-        return;
-      }
-
-      setPrediction(predictionResult.result);
-
-      // Save prediction to database
-      const probabilities: Record<string, number> = {};
-      predictionResult.result.predictions.forEach((pred) => {
-        probabilities[pred.breed] = pred.confidence;
-      });
-
-      const dbResult = await databaseService.createPrediction(user.id, {
-        breed_predicted: predictionResult.result.topPrediction.breed,
-        probabilities,
-        confidence: predictionResult.result.topPrediction.confidence,
-        image_url: selectedImage.uri,
-        model_version: predictionResult.result.modelVersion,
-        language: i18n.getCurrentLanguage(),
-      });
-
-      if (dbResult.error) {
-        console.error('Database save error:', dbResult.error);
-      }
-
+      setPrediction(predictionResponse);
+      
       Alert.alert(i18n.t('success'), i18n.t('predictionSuccess'));
 
     } catch (error) {
-      console.error('Prediction process error:', error);
+      console.error('Full prediction flow error:', error);
       setError('An unexpected error occurred during prediction');
     } finally {
       setLoading(false);

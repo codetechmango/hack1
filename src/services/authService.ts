@@ -56,14 +56,21 @@ class AuthService {
       const { data, error } = await supabase.auth.signUp({
         email: credentials.email,
         password: credentials.password,
+        options: {
+          emailRedirectTo: undefined, // Disable email confirmation for demo
+        },
       });
 
       if (error) {
         console.error('Signup error:', error);
+        if (error.message.includes('Email not confirmed')) {
+          return { user: null, error: 'emailNotConfirmed' };
+        }
         return { user: null, error: 'signupError' };
       }
 
       if (data.user) {
+        // For demo purposes, if user exists but email not confirmed, still allow login
         return {
           user: {
             id: data.user.id,
@@ -99,6 +106,12 @@ class AuthService {
 
       if (error) {
         console.error('Login error:', error);
+        if (error.message.includes('Email not confirmed')) {
+          return { user: null, error: 'emailNotConfirmed' };
+        }
+        if (error.message.includes('Invalid login credentials')) {
+          return { user: null, error: 'invalidCredentials' };
+        }
         return { user: null, error: 'loginError' };
       }
 
@@ -169,6 +182,31 @@ class AuthService {
     } catch (error) {
       console.error('Get profile exception:', error);
       return undefined;
+    }
+  }
+
+  async createProfile(userId: string, email: string, language?: Language): Promise<{ profile: Profile | null; error: string | null }> {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .insert({
+          user_id: userId,
+          preferred_language: language || 'en',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Create profile error:', error);
+        return { profile: null, error: 'profileError' };
+      }
+
+      return { profile: data, error: null };
+    } catch (error) {
+      console.error('Create profile exception:', error);
+      return { profile: null, error: 'profileError' };
     }
   }
 

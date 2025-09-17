@@ -65,6 +65,8 @@ export const translations = {
     signupError: 'Sign up failed. Please try again.',
     predictionError: 'Failed to predict breed',
     feedbackError: 'Failed to submit feedback',
+    emailNotConfirmed: 'Please check your email and click the confirmation link to activate your account.',
+    invalidCredentials: 'Invalid email or password. Please try again.',
   },
   
   hi: {
@@ -131,6 +133,8 @@ export const translations = {
     signupError: 'साइन अप विफल। कृपया पुनः प्रयास करें।',
     predictionError: 'नस्ल की भविष्यवाणी करने में विफल',
     feedbackError: 'प्रतिक्रिया जमा करने में विफल',
+    emailNotConfirmed: 'कृपया अपना ईमेल जांचें और अपना खाता सक्रिय करने के लिए पुष्टि लिंक पर क्लिक करें।',
+    invalidCredentials: 'गलत ईमेल या पासवर्ड। कृपया पुनः प्रयास करें।',
   },
   
   ta: {
@@ -197,5 +201,7 @@ export const translations = {
     signupError: 'பதிவு தோல்வி. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.',
     predictionError: 'இனம் கணிப்பதில் தோல்வி',
     feedbackError: 'கருத்து சமர்ப்பிப்பதில் தோல்வி',
+    emailNotConfirmed: 'தயவுசெய்து உங்கள் மின்னஞ்சலைச் சரிபார்த்து, உங்கள் கணக்கை செயல்படுத்த உறுதிப்படுத்தல் இணைப்பைக் கிளிக் செய்யவும்.',
+    invalidCredentials: 'தவறான மின்னஞ்சல் அல்லது கடவுச்சொல். தயவுசெய்து மீண்டும் முயற்சிக்கவும்.',
   },
 };

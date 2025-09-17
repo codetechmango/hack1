@@ -12,6 +12,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/common/Button';
 import { i18n } from '../localization/i18n';
 import { databaseService } from '../services/databaseService';
+import { insertFeedback, InsertFeedbackData } from '../services/feedbackService';
 import { PredictionResponse } from '../services/predictionService';
 
 interface FeedbackScreenProps {
@@ -63,19 +64,19 @@ export const FeedbackScreen: React.FC<FeedbackScreenProps> = ({
     setError(null);
 
     try {
-      // For demo, using a mock prediction ID
-      const mockPredictionId = `prediction_${Date.now()}`;
+      // Use the prediction ID from the route params, or generate a fallback
+      const predictionId = prediction.predictionId || `prediction_${Date.now()}`;
 
-      const result = await databaseService.createFeedback(user.id, {
-        prediction_id: mockPredictionId,
-        is_correct: selectedFeedback,
+      const feedbackData: InsertFeedbackData = {
+        prediction_id: predictionId,
+        user_id: user.id,
+        status: selectedFeedback ? 'Correct' : 'Incorrect',
         comment: comment.trim() || undefined,
-      });
+      };
 
-      if (result.error) {
-        setError(i18n.t(result.error) || 'Failed to submit feedback');
-        return;
-      }
+      const result = await insertFeedback(feedbackData);
+
+      console.log('Feedback submitted successfully:', result);
 
       Alert.alert(
         i18n.t('success'),

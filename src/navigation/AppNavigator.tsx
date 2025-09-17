@@ -4,13 +4,18 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { useAuth } from '../contexts/AuthContext';
 
 // Screens
+import { TestScreen } from '../screens/TestScreen';
 import { LoginScreen } from '../screens/LoginScreen';
 import { SignupScreen } from '../screens/SignupScreen';
 import { LanguageSelectionScreen } from '../screens/LanguageSelectionScreen';
 import { CameraScreen } from '../screens/CameraScreen';
 import { FeedbackScreen } from '../screens/FeedbackScreen';
 
+// Components
+import { LoadingScreen } from '../components/common/LoadingScreen';
+
 export type RootStackParamList = {
+  Test: undefined;
   Login: undefined;
   Signup: undefined;
   LanguageSelection: undefined;
@@ -28,7 +33,9 @@ const AuthStack = () => (
       headerShown: false,
       cardStyle: { backgroundColor: '#F8F9FA' },
     }}
+    initialRouteName="Login"
   >
+    <Stack.Screen name="Test" component={TestScreen} />
     <Stack.Screen name="Login" component={LoginScreen} />
     <Stack.Screen name="Signup" component={SignupScreen} />
     <Stack.Screen name="LanguageSelection" component={LanguageSelectionScreen} />
@@ -50,8 +57,9 @@ const AppStack = () => (
 export const AppNavigator: React.FC = () => {
   const { user, loading } = useAuth();
 
+  // Show loading screen while checking authentication
   if (loading) {
-    return null; // You could add a loading screen here
+    return <LoadingScreen message="Initializing app..." />;
   }
 
   return (
