@@ -30,7 +30,7 @@ export const CameraScreen = ({ navigation }: CameraScreenProps) => {
   const { user, signOut } = useAuth();
   const [selectedImage, setSelectedImage] = useState<ImageResult | null>(null);
   const [prediction, setPrediction] = useState<PredictionResponse | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [, forceUpdate] = useState({});
 

@@ -8,7 +8,6 @@ import { ErrorBoundary } from './src/components/common/ErrorBoundary';
 
 export default function App() {
   useEffect(() => {
-    // Initialize i18n on app start
     i18n.initialize().catch(error => {
       console.error('Failed to initialize i18n:', error);
     });

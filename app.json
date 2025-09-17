@@ -1,36 +1,46 @@
 {
   "expo": {
-    "name": "hack1",
+    "name": "Breed Predictor",
     "slug": "hack1",
     "version": "1.0.0",
+    "sdkVersion": "54.0.0",
+    "platforms": ["ios", "android", "web"],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": false,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hack1.breedpredictor"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.hack1.breedpredictor",
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
     },
-    "install": {
-      "exclude": [
-        "react-native-screens",
-        "react-native-safe-area-context",
-        "@react-navigation/native",
-        "@react-navigation/stack"
-      ]
+    "plugins": [
+      "expo-camera",
+      "expo-image-picker"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "your-project-id"
+      }
     }
   }
 }
