@@ -31,10 +31,10 @@ export const FeedbackScreen = ({
   const { user } = useAuth();
   const { prediction } = route.params;
   
-  const [selectedFeedback, setSelectedFeedback] = useState(null);
+  const [selectedFeedback, setSelectedFeedback] = useState<boolean | null>(null);
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [, forceUpdate] = useState({});
 
   useEffect(() => {

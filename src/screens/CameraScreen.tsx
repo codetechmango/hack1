@@ -14,7 +14,7 @@ import { Button } from '../components/common/Button';
 import { i18n } from '../localization/i18n';
 import { predictionService, PredictionResponse } from '../services/predictionService';
 import { databaseService } from '../services/databaseService';
-import * as ImagePicker from '../mocks/expo-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 
 interface CameraScreenProps {
   navigation: any;
@@ -28,10 +28,10 @@ interface ImageResult {
 
 export const CameraScreen = ({ navigation }: CameraScreenProps) => {
   const { user, signOut } = useAuth();
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [prediction, setPrediction] = useState(null);
+  const [selectedImage, setSelectedImage] = useState<ImageResult | null>(null);
+  const [prediction, setPrediction] = useState<PredictionResponse | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [, forceUpdate] = useState({});
 
   useEffect(() => {

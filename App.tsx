@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StatusBar } from './src/mocks/expo-status-bar';
+import { StatusBar } from 'expo-status-bar';
 import { View, StyleSheet } from 'react-native';
 import { AuthProvider } from './src/contexts/AuthContext';
 import { AppNavigator } from './src/navigation/AppNavigator';
@@ -15,12 +15,14 @@ export default function App() {
   }, []);
 
   return (
-    <ErrorBoundary children={
+    <ErrorBoundary>
       <View style={styles.container}>
         <StatusBar style="auto" />
-        <AuthProvider children={<AppNavigator />} />
+        <AuthProvider>
+          <AppNavigator />
+        </AuthProvider>
       </View>
-    } />
+    </ErrorBoundary>
   );
 }
 

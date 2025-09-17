@@ -22,7 +22,7 @@ export const LoginScreen = ({ navigation }: LoginScreenProps) => {
   const { signIn, loading } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [, forceUpdate] = useState({});
 
   // Subscribe to language changes
