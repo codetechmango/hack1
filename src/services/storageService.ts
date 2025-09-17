@@ -60,6 +60,11 @@ class StorageService {
         return { path: fileName, publicURL: imageUri, error: null };
       }
 
+      if (!data) {
+        console.warn('No data returned from upload');
+        return { path: fileName, publicURL: imageUri, error: null };
+      }
+
       // Get public URL
       const { data: publicUrlData } = supabase.storage
         .from(this.BUCKET_NAME)
@@ -90,6 +95,11 @@ class StorageService {
 
       if (error) {
         console.error('Upload error:', error);
+        return { publicUrl: imageUri, error: null };
+      }
+
+      if (!data) {
+        console.warn('No data returned from upload');
         return { publicUrl: imageUri, error: null };
       }
 

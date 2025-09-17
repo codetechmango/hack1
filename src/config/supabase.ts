@@ -1,5 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createClient } from '@supabase/supabase-js';
+import AsyncStorage from '../mocks/async-storage';
+import { createClient } from '../mocks/supabase-js';
 import env from './env';
 
 // Supabase credentials from local config

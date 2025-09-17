@@ -14,7 +14,7 @@ import { Button } from '../components/common/Button';
 import { i18n } from '../localization/i18n';
 import { predictionService, PredictionResponse } from '../services/predictionService';
 import { databaseService } from '../services/databaseService';
-import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from '../mocks/expo-image-picker';
 
 interface CameraScreenProps {
   navigation: any;
@@ -26,12 +26,12 @@ interface ImageResult {
   height: number;
 }
 
-export const CameraScreen: React.FC<CameraScreenProps> = ({ navigation }) => {
+export const CameraScreen = ({ navigation }: CameraScreenProps) => {
   const { user, signOut } = useAuth();
-  const [selectedImage, setSelectedImage] = useState<ImageResult | null>(null);
-  const [prediction, setPrediction] = useState<PredictionResponse | null>(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [prediction, setPrediction] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
   const [, forceUpdate] = useState({});
 
   useEffect(() => {
@@ -104,11 +104,12 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({ navigation }) => {
         quality: 0.8,
       });
 
-      if (!result.canceled && result.assets[0]) {
+      if (!result.canceled && result.assets && result.assets[0]) {
+        const asset = result.assets[0];
         setSelectedImage({
-          uri: result.assets[0].uri,
-          width: result.assets[0].width,
-          height: result.assets[0].height,
+          uri: asset.uri,
+          width: asset.width,
+          height: asset.height,
         });
         setPrediction(null);
       }
@@ -132,11 +133,12 @@ export const CameraScreen: React.FC<CameraScreenProps> = ({ navigation }) => {
         quality: 0.8,
       });
 
-      if (!result.canceled && result.assets[0]) {
+      if (!result.canceled && result.assets && result.assets[0]) {
+        const asset = result.assets[0];
         setSelectedImage({
-          uri: result.assets[0].uri,
-          width: result.assets[0].width,
-          height: result.assets[0].height,
+          uri: asset.uri,
+          width: asset.width,
+          height: asset.height,
         });
         setPrediction(null);
       }

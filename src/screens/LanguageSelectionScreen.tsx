@@ -28,11 +28,11 @@ const languageOptions: LanguageOption[] = [
   { code: 'ta', name: 'Tamil', nativeName: 'தமிழ்', flag: '🇮🇳' },
 ];
 
-export const LanguageSelectionScreen: React.FC<LanguageSelectionScreenProps> = ({
+export const LanguageSelectionScreen = ({
   navigation,
-}) => {
+}: LanguageSelectionScreenProps) => {
   const { updateUserProfile, user } = useAuth();
-  const [selectedLanguage, setSelectedLanguage] = useState<Language>('en');
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [loading, setLoading] = useState(false);
   const [, forceUpdate] = useState({});
 

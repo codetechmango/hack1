@@ -18,12 +18,12 @@ interface SignupScreenProps {
   navigation: any;
 }
 
-export const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
+export const SignupScreen = ({ navigation }: SignupScreenProps) => {
   const { signUp, loading } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
   const [, forceUpdate] = useState({});
 
   useEffect(() => {

@@ -24,17 +24,17 @@ interface FeedbackScreenProps {
   };
 }
 
-export const FeedbackScreen: React.FC<FeedbackScreenProps> = ({
+export const FeedbackScreen = ({
   navigation,
   route,
-}) => {
+}: FeedbackScreenProps) => {
   const { user } = useAuth();
   const { prediction } = route.params;
   
-  const [selectedFeedback, setSelectedFeedback] = useState<boolean | null>(null);
+  const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
   const [, forceUpdate] = useState({});
 
   useEffect(() => {

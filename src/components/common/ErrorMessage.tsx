@@ -18,7 +18,7 @@ interface ErrorMessageProps {
   variant?: 'error' | 'warning' | 'info';
 }
 
-export const ErrorMessage: React.FC<ErrorMessageProps> = ({
+export const ErrorMessage = ({
   message,
   title,
   style,
