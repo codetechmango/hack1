@@ -1,5 +1,6 @@
-import React, { Component, ReactNode } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { Component, ReactNode, ErrorInfo } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import { Button } from './Button';
 
 interface Props {
   children: ReactNode;
@@ -7,22 +8,39 @@ interface Props {
 
 interface State {
   hasError: boolean;
-  error?: Error;
+  error: Error | null;
+  errorInfo: ErrorInfo | null;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { 
+      hasError: false, 
+      error: null, 
+      errorInfo: null 
+    };
   }
 
-  static getDerivedStateFromError(error: Error): State {
+  static getDerivedStateFromError(error: Error): Partial<State> {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: any) {
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+    this.setState({
+      error: error,
+      errorInfo: errorInfo,
+    });
   }
+
+  private handleReset = () => {
+    this.setState({ 
+      hasError: false, 
+      error: null, 
+      errorInfo: null 
+    });
+  };
 
   render() {
     if (this.state.hasError) {
@@ -33,12 +51,10 @@ export class ErrorBoundary extends Component<Props, State> {
           <Text style={styles.errorMessage}>
             {this.state.error?.message || 'An unexpected error occurred'}
           </Text>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => this.setState({ hasError: false })}
-          >
-            <Text style={styles.buttonText}>Try Again</Text>
-          </TouchableOpacity>
+          <Button 
+            title="Try Again" 
+            onPress={this.handleReset}
+          />
         </View>
       );
     }

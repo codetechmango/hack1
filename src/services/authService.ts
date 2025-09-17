@@ -58,6 +58,9 @@ class AuthService {
         password: credentials.password,
         options: {
           emailRedirectTo: undefined, // Disable email confirmation for demo
+          data: {
+            preferred_language: 'en' // Default language
+          }
         },
       });
 

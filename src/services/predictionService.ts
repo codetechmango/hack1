@@ -38,6 +38,8 @@ class PredictionService {
   async handlePrediction(imageUri: string, currentUser: any, modelVersion = 'v1.0.0'): Promise<FullPredictionResult> {
     try {
       console.log('Starting full prediction flow for user:', currentUser.id);
+      console.log('Image URI:', imageUri);
+      console.log('User object:', currentUser);
       
       // 1. Upload image to storage
       console.log('Uploading image to storage...');

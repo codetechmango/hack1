@@ -1,5 +1,13 @@
 import { supabase } from '../config/supabase';
-import { v4 as uuidv4 } from 'uuid';
+
+// Simple UUID generator for React Native compatibility
+function generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
 
 // Convert URI to Blob helper function
 async function uriToBlob(uri: string): Promise<Blob> {
@@ -17,7 +25,7 @@ class StorageService {
   ): Promise<{ path: string; publicURL: string | null; error: string | null }> {
     try {
       // Generate unique filename
-      const fileName = `${userId}/${uuidv4()}.jpg`;
+      const fileName = `${userId}/${generateUUID()}.jpg`;
       
       let fileData: Blob | FormData;
       
