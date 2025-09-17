@@ -1,20 +1,23 @@
+import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { AuthProvider } from './src/contexts/AuthContext';
+import { AppNavigator } from './src/navigation/AppNavigator';
+import { i18n } from './src/localization/i18n';
 
 export default function App() {
+  useEffect(() => {
+    // Initialize i18n on app start
+    i18n.initialize().catch(error => {
+      console.error('Failed to initialize i18n:', error);
+    });
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
+    <>
       <StatusBar style="auto" />
-    </View>
+      <AuthProvider>
+        <AppNavigator />
+      </AuthProvider>
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
